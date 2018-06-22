@@ -31,3 +31,7 @@ Keys:
 Have fun with a game of Untangle
 ```
 
+
+![alt text](https://github.com/Pena86/untangle/blob/master/screenshots/Untangle_generate_50.png "Untangle generate")
+![alt text](https://github.com/Pena86/untangle/blob/master/screenshots/Untangle_beginning_50.png "Untangle beginning")
+![alt text](https://github.com/Pena86/untangle/blob/master/screenshots/Untangle_complete.png "Untangle complete")
