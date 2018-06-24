@@ -109,10 +109,11 @@ END = 5
 class Game:
     name = 'entangled'
 
-    def __init__(self, clock = None, nodes = DEFAULTNODES, anim = DEFAULTANIMAT, difficulty = DEFAULTDIFFICULTY):
-        if difficulty not in NODES:
-            difficulty = DEFAULTDIFFICULTY
-        nodes = NODES[difficulty]
+    def __init__(self, clock = None, nodes = None, anim = DEFAULTANIMAT, difficulty = DEFAULTDIFFICULTY):
+        if nodes is None:
+            if difficulty not in NODES:
+                difficulty = DEFAULTDIFFICULTY
+            nodes = NODES[difficulty]
         
         self.rectsAmmount = nodes
 
@@ -631,7 +632,7 @@ if __name__ == "__main__" :
                 '  -h, --help  show this help message and exit')
         exit()
 
-    nodes = DEFAULTNODES
+    nodes = None
     for a in sys.argv[1:]: # search first int for nodecount
         try:
             if int(a) > 3:
