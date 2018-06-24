@@ -81,11 +81,23 @@ class det:
 # https://en.wikipedia.org/wiki/X11_color_names (not all apply)
 # pygame.color.Color('Black')
 
+SCREEN_SIZES = {
+    'easy':{'width':600, 'height':400},
+    'normal':{'width':800, 'height':600},
+    'hard':{'width':1280, 'height':1024}
+}
+
 SCREEN_WIDTH  = 800
 SCREEN_HEIGHT = 600
 
+NODES = {
+    'easy':10,
+    'normal':20,
+    'hard':50
+}
 DEFAULTNODES = 20
 DEFAULTANIMAT = True
+DEFAULTDIFFICULTY = 'normal'
 
 # Game state constants:
 START = 1
@@ -97,7 +109,11 @@ END = 5
 class Game:
     name = 'entangled'
 
-    def __init__(self, clock = None, nodes = DEFAULTNODES, anim = DEFAULTANIMAT):
+    def __init__(self, clock = None, nodes = DEFAULTNODES, anim = DEFAULTANIMAT, difficulty = DEFAULTDIFFICULTY):
+        if difficulty not in NODES:
+            difficulty = DEFAULTDIFFICULTY
+        nodes = NODES[difficulty]
+        
         self.rectsAmmount = nodes
 
 
@@ -629,6 +645,13 @@ if __name__ == "__main__" :
         # search for placement animation hide code
         anim = False
 
+    difficulty = DEFAULTDIFFICULTY
+    for word in sys.argv[1:]:
+        if str(word).lower() in ['easy','normal','hard']:
+            difficulty = str(word).lower()
+            break
+    SCREEN_WIDTH = SCREEN_SIZES[difficulty]['width']
+    SCREEN_HEIGHT = SCREEN_SIZES[difficulty]['height']
     # --- command line arguments parse
 
     pygame.init()
@@ -637,7 +660,7 @@ if __name__ == "__main__" :
     screen_rect = screen.get_rect()
     clock = pygame.time.Clock()
 
-    game = Game(clock, nodes, anim)
+    game = Game(clock, nodes, anim, difficulty)
     running = True
     try:
         while( running and game.getRunningState() ):
