@@ -3,6 +3,7 @@
 from __future__ import print_function
 import pygame
 import random
+import score
 
 import math
 import sys
@@ -114,6 +115,7 @@ class Game:
             if difficulty not in NODES:
                 difficulty = DEFAULTDIFFICULTY
             nodes = NODES[difficulty]
+            self.gamedifficulty = difficulty
         
         self.rectsAmmount = nodes
 
@@ -183,7 +185,27 @@ class Game:
     def printGameStats(self):
         if self.gameState == RUN:
             self.updateGameDuration()
-            print ("Untangled {0}/{1} in {2} with {3} moves".format(self.untangledCount, len(self.rects), self.gameduration, self.moves), end = '\r')
+            print ("Untangled {0}/{1} in {2} with {3} moves".format(self.untangledCount, len(self.rects), self.gameduration, self.moves), end = '\n')
+    
+
+    def checkRanking(self):
+        gamescore = {'moves': self.moves, 'time': self.gameduration}
+        rank = score.checkRanking(gamescore, self.gamedifficulty)
+        if rank['moves'] >= 0 or rank['time'] >= 0:
+            # Ranked so get name
+            name = input("Congratulations! You have a new high score! Please enter your name: ")
+            score.save(gamescore, self.gamedifficulty, rank, name)
+        self.printRankings(score.getTopScores(self.gamedifficulty))
+
+
+    def printRankings(self, rankings):
+        print ("High Scores for {0} mode".format(self.gamedifficulty, end = '\n'))
+        print ("-- Moves --\n")
+        print ("Rank -- Moves - Name -- Time")
+        for index in range(0, len(rankings['moves']) - 1):
+            print ("{0} -- {1} - {2} -- {3}".format(index + 1, rankings['moves'][index]['score'], 
+            rankings['moves'][index]['name'], rankings['moves'][index]['occurred'], end = '\n'))
+
 
     def updateUntangledCount(self):
         if self.gameState == RUN:
@@ -590,6 +612,7 @@ class Game:
         if self.untangledCount >= len(self.rects) and self.gameState == RUN:
             self.printGameStats()
             self.gameState = END
+            self.checkRanking()
             print("\nGame complete! Restart for new game of Untangle")
         else:
             self.printGameStats()
