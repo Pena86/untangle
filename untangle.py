@@ -185,7 +185,7 @@ class Game:
     def printGameStats(self):
         if self.gameState == RUN:
             self.updateGameDuration()
-            print ("Untangled {0}/{1} in {2} with {3} moves".format(self.untangledCount, len(self.rects), self.gameduration, self.moves), end = '\n')
+            print ("Untangled {0}/{1} in {2} with {3} moves".format(self.untangledCount, len(self.rects), self.gameduration, self.moves), end = '\r')
     
 
     def checkRanking(self):
@@ -199,12 +199,19 @@ class Game:
 
 
     def printRankings(self, rankings):
-        print ("High Scores for {0} mode".format(self.gamedifficulty, end = '\n'))
+        print ("\nHigh Scores for {0} mode".format(self.gamedifficulty, end = '\n'))
         print ("-- Moves --\n")
         print ("Rank -- Moves - Name -- Time")
-        for index in range(0, len(rankings['moves']) - 1):
+        moves_length = len(rankings['moves'])
+        for index in range(0, len(rankings['moves'])):
             print ("{0} -- {1} - {2} -- {3}".format(index + 1, rankings['moves'][index]['score'], 
             rankings['moves'][index]['name'], rankings['moves'][index]['occurred'], end = '\n'))
+        
+        print ("-- Time --\n")
+        print ("Rank -- Time - Name -- Time")
+        for index in range(0, len(rankings['time'])):
+            print ("{0} -- {1} - {2} -- {3}".format(index + 1, rankings['time'][index]['score'], 
+            rankings['time'][index]['name'], rankings['time'][index]['occurred'], end = '\n'))
 
 
     def updateUntangledCount(self):

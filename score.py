@@ -93,25 +93,32 @@ def checkRanking(score, gamemode):
     if movesListLength <= 0:
         position['moves'] = 0
     else:
-        for index in range(0,movesListLength - 1):
-            # Check if new score is better than an existing ranked score
-            if highscores[gamemode]['moves'][index]['score'] >= score['moves']:
-                # Give a ranking only if the score is within the largest amount of 
-                # ranking positions (default is top 10)
-                position['moves'] = index if index <= MAX_RANKING_POSITIONS else -1
+        for index in range(0,MAX_RANKING_POSITIONS):
+            if index < movesListLength:
+                # Check if new score is better than an existing ranked score
+                if highscores[gamemode]['moves'][index]['score'] >= score['moves']:
+                    # Give a ranking only if the score is within the largest amount of 
+                    # ranking positions (default is top 10)
+                    position['moves'] = index if index < MAX_RANKING_POSITIONS else -1
+            else:
+                position['moves'] = index
+                break
         
-
-    # Check if score ranks within moves results
-    timesListLength = len(highscores[gamemode]['time'])
-    if timesListLength <= 0:
+    # Check if score ranks within time results
+    timeListLength = len(highscores[gamemode]['time'])
+    if timeListLength <= 0:
         position['time'] = 0
     else:
-        for index in range(0,timesListLength - 1):
-            # Check if new score is better than an existing ranked score
-            if highscores[gamemode]['time'][index]['score'] >= score['time']:
-                # Give a ranking only if the score is within the largest amount of 
-                # ranking positions (default is top 10)
-                position['time'] = index if index <= MAX_RANKING_POSITIONS else -1
+        for index in range(0,MAX_RANKING_POSITIONS):
+            if index < timeListLength:
+                # Check if new score is better than an existing ranked score
+                if highscores[gamemode]['time'][index]['score'] >= score['time']:
+                    # Give a ranking only if the score is within the largest amount of 
+                    # ranking positions (default is top 10)
+                    position['time'] = index if index < MAX_RANKING_POSITIONS else -1
+            else:
+                position['time'] = index
+                break
         
     return position
 
