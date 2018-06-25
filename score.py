@@ -1,6 +1,7 @@
 import json
 
-DEFAULTGAMEMODE = 'normal'
+DEFAULT_GAMEMODE = 'normal'
+MAX_RANKING_POSITIONS = 10
 
 class Score:
     scores = {
@@ -26,20 +27,43 @@ class Score:
     def getTopScores(self, gamemode):
         if gamemode in self.scores:
             return self.scores[gamemode]
-        return self.scores[DEFAULTGAMEMODE]
+        return self.scores[DEFAULT_GAMEMODE]
+
+
+    def save(self, score, gamemode, position):
+        pass
 
     
-    def saveScore(self, score, gamemode):
-        position = {}
+    def checkRanking(self, score, gamemode):
+        # the value -1 means that the score did not make a ranking
+        position = {'moves': -1, 'time': -1}
 
         if gamemode not in self.scores:
-            return {'moves': -1, 'time': -1}
+            return position
         
+        # Check if score ranks within moves results
         movesListLength = len(self.scores[gamemode]['moves'])
         if movesListLength <= 0:
-            self.scores[gamemode]['moves'].insert(0,score['moves'])
             position['moves'] = 0
         else:
-            for index in range(0,movesListLength):
+            for index in range(0,movesListLength - 1):
+                # Check if new score is better than an existing ranked score
                 if self.scores[gamemode]['moves'][index] >= score['moves']:
-                    self.scores[gamemode]['moves'].insert(index,score['moves'])
+                    # Give a ranking only if the score is within the largest amount of 
+                    # ranking positions (default is top 10)
+                    position['moves'] = index if index <= MAX_RANKING_POSITIONS else -1
+        
+
+        # Check if score ranks within moves results
+        timesListLength = len(self.scores[gamemode]['time'])
+        if timesListLength <= 0:
+            position['time'] = 0
+        else:
+            for index in range(0,timesListLength - 1):
+                # Check if new score is better than an existing ranked score
+                if self.scores[gamemode]['time'][index] >= score['time']:
+                    # Give a ranking only if the score is within the largest amount of 
+                    # ranking positions (default is top 10)
+                    position['time'] = index if index <= MAX_RANKING_POSITIONS else -1
+        
+        return position
