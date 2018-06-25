@@ -75,6 +75,13 @@ def save(score, gamemode, position, name):
         }
         highscores[gamemode]['time'].insert(position['time'], highScore)
     
+    # truncate to max ranking count
+    if len(highscores[gamemode]['moves']) >= MAX_RANKING_POSITIONS:
+        highscores[gamemode]['moves'] = highscores[gamemode]['moves'][:MAX_RANKING_POSITIONS]
+    
+    if len(highscores[gamemode]['time']) >= MAX_RANKING_POSITIONS:
+        highscores[gamemode]['time'] = highscores[gamemode]['time'][:MAX_RANKING_POSITIONS]
+
     with open(SAVE_FILE_NAME, 'w') as savefile:
         json.dump(highscores, savefile, default=json_serial)
 
@@ -100,6 +107,7 @@ def checkRanking(score, gamemode):
                     # Give a ranking only if the score is within the largest amount of 
                     # ranking positions (default is top 10)
                     position['moves'] = index if index < MAX_RANKING_POSITIONS else -1
+                    break
             else:
                 position['moves'] = index
                 break
@@ -116,6 +124,7 @@ def checkRanking(score, gamemode):
                     # Give a ranking only if the score is within the largest amount of 
                     # ranking positions (default is top 10)
                     position['time'] = index if index < MAX_RANKING_POSITIONS else -1
+                    break
             else:
                 position['time'] = index
                 break
