@@ -11,14 +11,14 @@ Currently all texts goes to console, so run it from commandline.
 
 python untangle.py -h
 ```
-usage: untangle.py [-h] [nodes] [animation]
-
-positional arguments:
-  nodes       Ammount of nodes (>3)
-  animation   Show puzzle build (bool | n | y)
+usage: untangle.py [-h] [nodes] [animation] [difficulty]
 
 optional arguments:
   -h, --help  show this help message and exit
+
+  nodes       Ammount of nodes (>3)
+  animation   Show puzzle build (bool | n | y)
+  difficulty  Puzzle difficulty (easy | normal | hard)
 ```
 
 python untangle.py 30
