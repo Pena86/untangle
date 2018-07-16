@@ -654,12 +654,12 @@ if __name__ == "__main__" :
     # Yes, i could use the argparse -package, but choose to build the parser myself
 
     if len(sys.argv) > 1 and (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
-        print ('usage: untangle.py [-h] [nodes] [animation]\n\n' \
-                'positional arguments:\n' \
-                '  nodes       Ammount of nodes (>3)\n' \
-                '  animation   Show puzzle build (bool | n | y)\n\n' \
+        print ('usage: untangle.py [-h] [nodes] [animation] [difficulty]\n\n' \
                 'optional arguments:\n' \
-                '  -h, --help  show this help message and exit')
+                '  -h, --help  show this help message and exit\n\n' \
+                '  nodes       Ammount of nodes (>3)\n' \
+                '  animation   Show puzzle build (bool | n | y)\n' \
+                '  difficulty  Puzzle difficulty (easy | normal | hard)')
         exit()
 
     nodes = None
