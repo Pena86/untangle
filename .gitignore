@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# VS Code config
+.vscode
+
+# user specific save game files
+saves.json

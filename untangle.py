@@ -3,6 +3,7 @@
 from __future__ import print_function
 import pygame
 import random
+import score
 
 import math
 import sys
@@ -81,11 +82,23 @@ class det:
 # https://en.wikipedia.org/wiki/X11_color_names (not all apply)
 # pygame.color.Color('Black')
 
+SCREEN_SIZES = {
+    'easy':{'width':600, 'height':400},
+    'normal':{'width':800, 'height':600},
+    'hard':{'width':1280, 'height':1024}
+}
+
 SCREEN_WIDTH  = 800
 SCREEN_HEIGHT = 600
 
+NODES = {
+    'easy':10,
+    'normal':20,
+    'hard':50
+}
 DEFAULTNODES = 20
 DEFAULTANIMAT = True
+DEFAULTDIFFICULTY = 'normal'
 
 # Game state constants:
 START = 1
@@ -97,7 +110,13 @@ END = 5
 class Game:
     name = 'entangled'
 
-    def __init__(self, clock = None, nodes = DEFAULTNODES, anim = DEFAULTANIMAT):
+    def __init__(self, clock = None, nodes = None, anim = DEFAULTANIMAT, difficulty = DEFAULTDIFFICULTY):
+        if nodes is None:
+            if difficulty not in NODES:
+                difficulty = DEFAULTDIFFICULTY
+            nodes = NODES[difficulty]
+            self.gamedifficulty = difficulty
+        
         self.rectsAmmount = nodes
 
 
@@ -167,6 +186,33 @@ class Game:
         if self.gameState == RUN:
             self.updateGameDuration()
             print ("Untangled {0}/{1} in {2} with {3} moves".format(self.untangledCount, len(self.rects), self.gameduration, self.moves), end = '\r')
+    
+
+    def checkRanking(self):
+        gamescore = {'moves': self.moves, 'time': self.gameduration}
+        rank = score.checkRanking(gamescore, self.gamedifficulty)
+        if rank['moves'] >= 0 or rank['time'] >= 0:
+            # Ranked so get name
+            name = input("Congratulations! You have a new high score! Please enter your name: ")
+            score.save(gamescore, self.gamedifficulty, rank, name)
+        self.printRankings(score.getTopScores(self.gamedifficulty))
+
+
+    def printRankings(self, rankings):
+        print ("\nHigh Scores for {0} mode".format(self.gamedifficulty, end = '\n'))
+        print ("-- Moves --\n")
+        print ("Rank -- Moves - Name -- Time")
+        moves_length = len(rankings['moves'])
+        for index in range(0, len(rankings['moves'])):
+            print ("{0} -- {1} - {2} -- {3}".format(index + 1, rankings['moves'][index]['score'], 
+            rankings['moves'][index]['name'], rankings['moves'][index]['occurred'], end = '\n'))
+        
+        print ("-- Time --\n")
+        print ("Rank -- Time - Name -- Time")
+        for index in range(0, len(rankings['time'])):
+            print ("{0} -- {1} - {2} -- {3}".format(index + 1, rankings['time'][index]['score'], 
+            rankings['time'][index]['name'], rankings['time'][index]['occurred'], end = '\n'))
+
 
     def updateUntangledCount(self):
         if self.gameState == RUN:
@@ -573,6 +619,7 @@ class Game:
         if self.untangledCount >= len(self.rects) and self.gameState == RUN:
             self.printGameStats()
             self.gameState = END
+            self.checkRanking()
             print("\nGame complete! Restart for new game of Untangle")
         else:
             self.printGameStats()
@@ -615,7 +662,7 @@ if __name__ == "__main__" :
                 '  -h, --help  show this help message and exit')
         exit()
 
-    nodes = DEFAULTNODES
+    nodes = None
     for a in sys.argv[1:]: # search first int for nodecount
         try:
             if int(a) > 3:
@@ -629,6 +676,13 @@ if __name__ == "__main__" :
         # search for placement animation hide code
         anim = False
 
+    difficulty = DEFAULTDIFFICULTY
+    for word in sys.argv[1:]:
+        if str(word).lower() in ['easy','normal','hard']:
+            difficulty = str(word).lower()
+            break
+    SCREEN_WIDTH = SCREEN_SIZES[difficulty]['width']
+    SCREEN_HEIGHT = SCREEN_SIZES[difficulty]['height']
     # --- command line arguments parse
 
     pygame.init()
@@ -637,7 +691,7 @@ if __name__ == "__main__" :
     screen_rect = screen.get_rect()
     clock = pygame.time.Clock()
 
-    game = Game(clock, nodes, anim)
+    game = Game(clock, nodes, anim, difficulty)
     running = True
     try:
         while( running and game.getRunningState() ):
