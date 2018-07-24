@@ -1,7 +1,7 @@
 # Untangle
 Untangle game with pygame
 
-![alt text](https://img.shields.io/badge/python-2.7-blue.svg?v=1 "Python 2.7")
+![alt text](https://img.shields.io/badge/python-2.7-red.svg?v=1 "Python 2.7")
 ![alt text](https://img.shields.io/badge/python-3.5-blue.svg?v=1 "Python 3.5")
 ![alt text](https://img.shields.io/badge/PyGame-1.9.3-blue.svg?v=1 "PyGame 1.9.3")
 
@@ -25,7 +25,9 @@ python untangle.py 30
 ```
 Keys:
   LMB drag to move a node
+  RMB drag to move all nodes
   RMB to mark / unmark a node
+  Wheel to zoom
   ESC to exit
   Space to move all nodes closer to each other
 Have fun with a game of Untangle

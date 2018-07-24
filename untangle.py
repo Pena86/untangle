@@ -169,7 +169,9 @@ class Game:
 
         print("\nKeys:\n" \
                 "  LMB drag to move a node\n" \
+                "  RMB drag to move all nodes\n" \
                 "  RMB to mark / unmark a node\n" \
+                "  Wheel to zoom\n" \
                 "  ESC to exit\n" \
                 "  Space to move all nodes closer to each other\n" \
                 "Have fun with a game of Untangle\n")
@@ -245,6 +247,11 @@ class Game:
         To place nodes to a certain grid
         '''
         return int(self.gridSize * round(float(x)/self.gridSize))
+
+    def zoom(self, zoom, pos):
+        for rect in self.rects:
+            rect[0].x = self.myRound(((rect[0].x - pos[0]) * zoom) + pos[0])
+            rect[0].y = self.myRound(((rect[0].y - pos[1]) * zoom) + pos[1])
 
     def testSegmentIntercet(self, i, c):
         collides = False
@@ -525,7 +532,7 @@ class Game:
 # __webpage__ = 'http://blog.furas.pl'
 #
 # ---------------------------------------------------------------------
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and self.gameState >= RUN:
             if event.button == 1: # select
                 for i, r in enumerate(self.rects):
                     # Pythagoras a^2 + b^2 = c^2
@@ -557,6 +564,11 @@ class Game:
                 if not found:
                     self.mark = None
 
+            if event.button == 4: # wheel up
+                self.zoom(1.05, event.pos)
+            if event.button == 5: # wheel down
+                self.zoom(0.95, event.pos)
+
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1 and self.selected is not None:
                 self.rects[self.selected][0].x = self.myRound(self.rects[self.selected][0].x)
@@ -565,7 +577,11 @@ class Game:
                 self.selected = None
 
         elif event.type == pygame.MOUSEMOTION:
-            if self.selected is not None: # selected can be `0` so `is not None` is required
+            if event.buttons[2] and self.gameState >= RUN: # drag all nodes across with RMB
+                for rect in self.rects:
+                    rect[0].x += event.rel[0]
+                    rect[0].y += event.rel[1]
+            elif self.selected is not None: # selected can be `0` so `is not None` is required
                 # move object
                 self.rects[self.selected][0].x = self.myRound(event.pos[0] + self.selected_offset_x)
                 self.rects[self.selected][0].y = self.myRound(event.pos[1] + self.selected_offset_y)
